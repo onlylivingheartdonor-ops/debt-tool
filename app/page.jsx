@@ -193,7 +193,7 @@ export default function Page() {
                     <div className="dr-result-cell">
                       <p className="dr-result-label">Payoff time</p>
                       <p className="dr-result-val">
-                        {results.months >= 600 ? "50+ yrs" : results.months < 12 ? `${results.months} mo` : `${Math.floor(results.months / 12)}y ${results.months % 12}m`}
+                        {results.months >= 600 ? "50+ yrs" : results.months < 12 ? results.months + " mo" : Math.floor(results.months / 12) + "y " + (results.months % 12) + "m"}
                       </p>
                     </div>
                     <div className="dr-result-cell">
@@ -239,7 +239,7 @@ export default function Page() {
                   <span className="dr-schedule-toggle" onClick={() => setShowSchedule(s => !s)}>
                     {showSchedule ? "Hide" : "Show"} amortization schedule
                   </span>
-                  <div className={`dr-schedule${showSchedule ? " show" : ""}`}>
+                  <div className={"dr-schedule" + (showSchedule ? " show" : "")}>
                     <table className="dr-schedule-table">
                       <thead>
                         <tr><th>Month</th><th>Interest</th><th>Total interest</th><th>Remaining</th></tr>
