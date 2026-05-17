@@ -1,7 +1,11 @@
 "use client"
 
+<<<<<<< HEAD
 import { useState } from "react"
 import { RELATED_LINKS as RELATED } from "./lib/links"
+=======
+import { useState, useEffect } from "react"
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
 
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap');
@@ -14,7 +18,13 @@ const css = `
   .dr-title em { font-style: italic; color: #0f6e56; }
   .dr-card { background: #fff; border: 1px solid #e0dbd3; border-radius: 4px; padding: 1.5rem; margin-bottom: 1.5rem; }
   .dr-section-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; margin-bottom: 1rem; color: #1a1a1a; }
+<<<<<<< HEAD
   .dr-field-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+=======
+
+  .dr-field-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+  .dr-field-block { }
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
   .dr-field-label { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #888; display: block; margin-bottom: .4rem; }
   .dr-field-hint { font-size: 12px; color: #888; margin-top: .3rem; }
   .dr-input-wrap { position: relative; }
@@ -23,8 +33,15 @@ const css = `
   .dr-input { width: 100%; border: none; border-bottom: 1.5px solid #e0dbd3; background: transparent; font-family: 'DM Mono', monospace; font-size: 1.1rem; color: #1a1a1a; padding: .4rem 1.2rem .4rem 1.2rem; outline: none; transition: border-color .2s; }
   .dr-input.no-prefix { padding-left: 0; }
   .dr-input:focus { border-color: #0f6e56; }
+<<<<<<< HEAD
   .dr-calc-btn { width: 100%; padding: 1rem; background: #1a1a1a; color: #fff; border: none; font-family: 'DM Mono', monospace; font-size: .9rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: background .2s; }
   .dr-calc-btn:hover { background: #0f6e56; }
+=======
+
+  .dr-calc-btn { width: 100%; padding: 1rem; background: #1a1a1a; color: #fff; border: none; font-family: 'DM Mono', monospace; font-size: .9rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: background .2s; }
+  .dr-calc-btn:hover { background: #0f6e56; }
+
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
   .dr-results { margin-top: 1.5rem; border-top: 1px solid #e0dbd3; padding-top: 1.5rem; }
   .dr-result-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: #e0dbd3; border: 1px solid #e0dbd3; border-radius: 2px; overflow: hidden; margin-bottom: 1.5rem; }
   .dr-result-cell { background: #fff; padding: 1rem 1.25rem; }
@@ -32,6 +49,10 @@ const css = `
   .dr-result-val { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: #1a1a1a; }
   .dr-result-val.red { color: #b91c1c; }
   .dr-result-val.green { color: #0f6e56; }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
   .dr-timeline { margin-bottom: 1.5rem; }
   .dr-timeline-label { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #888; margin-bottom: .75rem; display: flex; justify-content: space-between; }
   .dr-bar-track { height: 8px; background: #e0dbd3; border-radius: 4px; overflow: hidden; margin-bottom: .4rem; }
@@ -39,6 +60,21 @@ const css = `
   .dr-bar-interest { height: 100%; background: #b91c1c; display: inline-block; }
   .dr-bar-legend { display: flex; gap: 1.5rem; font-size: 11px; color: #888; }
   .dr-legend-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: .35rem; vertical-align: middle; }
+<<<<<<< HEAD
+=======
+
+  .dr-schedule-toggle { font-size: 12px; color: #0f6e56; cursor: pointer; text-decoration: underline; margin-bottom: .75rem; display: inline-block; }
+  .dr-schedule { display: none; }
+  .dr-schedule.show { display: block; }
+  .dr-schedule-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .dr-schedule-table th { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: #888; text-align: left; padding: .4rem .5rem; border-bottom: 1px solid #e0dbd3; }
+  .dr-schedule-table td { padding: .4rem .5rem; border-bottom: 1px solid #f5f3ef; color: #444; }
+  .dr-schedule-table tr:last-child td { color: #0f6e56; font-weight: 500; }
+
+  .dr-payoff-warn { font-size: 12px; color: #b91c1c; padding: .9rem 1rem; background: #fff8f8; border: 1px solid #fcd4d4; border-radius: 3px; margin-bottom: 1rem; line-height: 1.6; }
+  .dr-payoff-warn span { font-weight: 500; }
+
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
   .dr-extra-section { border: 1.5px dashed #b7d9c8; border-radius: 4px; padding: 1.25rem; margin-bottom: 1rem; }
   .dr-extra-title { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #0f6e56; margin-bottom: .75rem; }
   .dr-extra-row { display: flex; align-items: center; gap: 1rem; }
@@ -47,6 +83,7 @@ const css = `
   .dr-extra-input:focus { border-color: #0f6e56; }
   .dr-extra-prefix { font-size: .9rem; color: #aaa; }
   .dr-extra-result { font-size: 12px; color: #0f6e56; margin-top: .75rem; line-height: 1.6; min-height: 1.4em; }
+<<<<<<< HEAD
   .dr-schedule-toggle { font-size: 12px; color: #0f6e56; cursor: pointer; text-decoration: underline; margin-bottom: .75rem; display: inline-block; }
   .dr-schedule { display: none; overflow-x: auto; }
   .dr-schedule.show { display: block; }
@@ -56,29 +93,67 @@ const css = `
   .dr-schedule-table tr:last-child td { color: #0f6e56; font-weight: 500; }
   .dr-warn { font-size: 12px; color: #b91c1c; padding: .9rem 1rem; background: #fff8f8; border: 1px solid #fcd4d4; border-radius: 3px; margin-bottom: 1rem; line-height: 1.6; }
   .dr-warn span { font-weight: 500; }
+=======
+
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
   .dr-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
   .dr-info-item { padding: .75rem; border-left: 2px solid #9fe1cb; }
   .dr-info-title { font-size: 12px; font-weight: 500; color: #1a1a1a; margin-bottom: .25rem; }
   .dr-info-body { font-size: 12px; color: #888; line-height: 1.5; }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
   .dr-prose p { font-size: 13px; color: #444; line-height: 1.7; margin-bottom: .75rem; }
   .dr-prose p:last-child { margin-bottom: 0; }
   .dr-prose ul { font-size: 13px; color: #444; line-height: 1.8; padding-left: 1.2rem; margin-bottom: .75rem; }
   .dr-prose ul li { margin-bottom: .3rem; }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
   .dr-tip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .dr-tip-num { font-family: 'DM Serif Display', serif; font-size: 2rem; color: #9fe1cb; line-height: 1; margin-bottom: .4rem; }
   .dr-tip-title { font-size: 12px; font-weight: 500; color: #1a1a1a; margin-bottom: .25rem; }
   .dr-tip-body { font-size: 12px; color: #888; line-height: 1.5; }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
   .dr-related-links { display: flex; flex-wrap: wrap; gap: .5rem; }
   .dr-related-link { font-size: 12px; padding: .35rem .75rem; border: 1px solid #e0dbd3; border-radius: 2px; color: #555; text-decoration: none; transition: all .15s; display: inline-block; }
   .dr-related-link:hover { border-color: #1a1a1a; color: #1a1a1a; }
   .dr-disclaimer { font-size: 11px; color: #888; line-height: 1.6; border-top: 1px solid #e0dbd3; padding-top: 1rem; margin-top: 1rem; }
   .dr-footer-links { display: flex; gap: 1rem; font-size: 11px; margin-top: .75rem; }
   .dr-footer-links a { color: #888; text-decoration: underline; }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
   @media (max-width: 600px) {
     .dr-field-row, .dr-result-grid, .dr-info-grid, .dr-tip-grid { grid-template-columns: 1fr; }
   }
 `
 
+<<<<<<< HEAD
+=======
+const RELATED = [
+  { label: "Credit Card Debt Payoff Calculator",  href: "https://creditcarddebtpayoffcalculator.com" },
+  { label: "Debt Reducing Calculator",            href: "https://debtreducingcalculator.com" },
+  { label: "Side Hustle Tax Estimator",           href: "https://sidehustletaxestimator.com" },
+  { label: "High Yield Savings Calculator",       href: "https://highyieldsavingscalculator.com" },
+  { label: "Retirement Savings Gap",              href: "https://retirementsavingsgap.com" },
+  { label: "Life Insurance Coverage Calculator",  href: "https://lifeinsurancecoveragecalculator.com" },
+  { label: "Online Course ROI Calculator",        href: "https://onlinecourseroi.com" },
+  { label: "Subscription Cost Calculator",        href: "https://mysubscriptioncost.com" },
+  { label: "Email Attachment Size Checker",       href: "https://emailattachmentsize.com" },
+  { label: "GPA Calculator",                      href: "https://gpacalculator.site" },
+  { label: "YouTube Title Checker",               href: "https://youtubetitlechecker.com" },
+  { label: "Strong Password Builder",             href: "https://strongpasswordbuilder.com" },
+  { label: "Cool Username Generator",             href: "https://coolusernamegenerator.com" },
+]
+
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
 function fmt(n) { return "$" + Math.round(n).toLocaleString("en-US") }
 function fmtDec(n) { return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }
 
@@ -86,9 +161,22 @@ function simulate(balance, rate, payment) {
   if (!balance || !payment) return null
   const monthlyRate = rate / 100 / 12
   const minRequired = balance * monthlyRate
+<<<<<<< HEAD
   if (payment <= minRequired && rate > 0) return { underpaying: true, minRequired }
   let remaining = balance, totalInterest = 0, months = 0
   const schedule = []
+=======
+
+  if (payment <= minRequired && rate > 0) {
+    return { underpaying: true, minRequired }
+  }
+
+  let remaining = balance
+  let totalInterest = 0
+  let months = 0
+  const schedule = []
+
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
   while (remaining > 0 && months < 600) {
     const interest = remaining * monthlyRate
     totalInterest += interest
@@ -99,13 +187,23 @@ function simulate(balance, rate, payment) {
       schedule.push({ month: months, remaining, interest, totalInterest })
     }
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
   return { months, totalInterest, schedule, underpaying: false }
 }
 
 function simulateExtra(balance, rate, payment, extra) {
   if (!balance || !payment || !extra) return null
   const monthlyRate = rate / 100 / 12
+<<<<<<< HEAD
   let remaining = balance, totalInterest = 0, months = 0
+=======
+  let remaining = balance
+  let totalInterest = 0
+  let months = 0
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
   while (remaining > 0 && months < 600) {
     const interest = remaining * monthlyRate
     totalInterest += interest
@@ -117,11 +215,19 @@ function simulateExtra(balance, rate, payment, extra) {
 }
 
 export default function Page() {
+<<<<<<< HEAD
   const [balance,      setBalance]      = useState("")
   const [rate,         setRate]         = useState("")
   const [payment,      setPayment]      = useState("")
   const [extra,        setExtra]        = useState("")
   const [results,      setResults]      = useState(null)
+=======
+  const [balance, setBalance]   = useState("")
+  const [rate, setRate]         = useState("")
+  const [payment, setPayment]   = useState("")
+  const [extra, setExtra]       = useState("")
+  const [results, setResults]   = useState(null)
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
   const [showSchedule, setShowSchedule] = useState(false)
 
   const calculate = () => {
@@ -131,6 +237,7 @@ export default function Page() {
     setShowSchedule(false)
   }
 
+<<<<<<< HEAD
   const extraResult   = results && !results.underpaying && extra
     ? simulateExtra(parseFloat(balance), parseFloat(rate) || 0, parseFloat(payment), parseFloat(extra))
     : null
@@ -138,6 +245,17 @@ export default function Page() {
   const interestPct   = totalPaid > 0 ? Math.round(results.totalInterest / totalPaid * 100) : 0
   const principalPct  = 100 - interestPct
   const monthsSaved   = extraResult ? results.months - extraResult.months : 0
+=======
+  const extraResult = results && !results.underpaying && extra
+    ? simulateExtra(parseFloat(balance), parseFloat(rate) || 0, parseFloat(payment), parseFloat(extra))
+    : null
+
+  const totalPaid    = results && !results.underpaying ? parseFloat(balance) + results.totalInterest : 0
+  const interestPct  = totalPaid > 0 ? Math.round(results.totalInterest / totalPaid * 100) : 0
+  const principalPct = 100 - interestPct
+
+  const monthsSaved  = extraResult ? results.months - extraResult.months : 0
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
   const interestSaved = extraResult ? results.totalInterest - extraResult.totalInterest : 0
 
   return (
@@ -153,7 +271,11 @@ export default function Page() {
         {/* TOOL */}
         <div className="dr-card">
           <div className="dr-field-row">
+<<<<<<< HEAD
             <div>
+=======
+            <div className="dr-field-block">
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
               <label className="dr-field-label" htmlFor="balance">Total debt balance</label>
               <div className="dr-input-wrap">
                 <span className="dr-prefix">$</span>
@@ -161,7 +283,11 @@ export default function Page() {
                   value={balance} onChange={e => setBalance(e.target.value)} onKeyDown={e => e.key === "Enter" && calculate()} />
               </div>
             </div>
+<<<<<<< HEAD
             <div>
+=======
+            <div className="dr-field-block">
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
               <label className="dr-field-label" htmlFor="rate">Annual interest rate</label>
               <div className="dr-input-wrap">
                 <input id="rate" className="dr-input no-prefix" type="number" min="0" step="0.01" placeholder="0.00"
@@ -169,7 +295,11 @@ export default function Page() {
                 <span className="dr-suffix">%</span>
               </div>
             </div>
+<<<<<<< HEAD
             <div>
+=======
+            <div className="dr-field-block">
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
               <label className="dr-field-label" htmlFor="payment">Monthly payment</label>
               <div className="dr-input-wrap">
                 <span className="dr-prefix">$</span>
@@ -184,8 +314,13 @@ export default function Page() {
           {results && (
             <div className="dr-results">
               {results.underpaying ? (
+<<<<<<< HEAD
                 <div className="dr-warn">
                   Your monthly payment of {fmt(parseFloat(payment))} does not cover the monthly interest of <span>{fmtDec(results.minRequired)}</span>. The balance will grow indefinitely. You need at least <span>{fmtDec(results.minRequired + 1)}/month</span> to make progress.
+=======
+                <div className="dr-payoff-warn">
+                  Your monthly payment of {fmt(parseFloat(payment))} does not cover the monthly interest of <span>{fmtDec(results.minRequired)}</span>. At this rate, the balance will grow indefinitely. You need to pay at least <span>{fmtDec(results.minRequired + 1)}/month</span> to make progress.
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
                 </div>
               ) : (
                 <>
@@ -193,7 +328,13 @@ export default function Page() {
                     <div className="dr-result-cell">
                       <p className="dr-result-label">Payoff time</p>
                       <p className="dr-result-val">
+<<<<<<< HEAD
                         {results.months >= 600 ? "50+ yrs" : results.months < 12 ? results.months + " mo" : Math.floor(results.months / 12) + "y " + (results.months % 12) + "m"}
+=======
+                        {results.months >= 600 ? "50+ yrs"
+                          : results.months < 12 ? `${results.months} mo`
+                          : `${Math.floor(results.months / 12)}y ${results.months % 12}m`}
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
                       </p>
                     </div>
                     <div className="dr-result-cell">
@@ -208,7 +349,11 @@ export default function Page() {
 
                   <div className="dr-timeline">
                     <div className="dr-timeline-label">
+<<<<<<< HEAD
                       <span>Principal vs interest</span>
+=======
+                      <span>Principal vs interest breakdown</span>
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
                       <span>{principalPct}% principal · {interestPct}% interest</span>
                     </div>
                     <div className="dr-bar-track">
@@ -231,7 +376,11 @@ export default function Page() {
                     </div>
                     {extraResult && (
                       <p className="dr-extra-result">
+<<<<<<< HEAD
                         Adding {fmt(parseFloat(extra))}/month saves you <strong style={{ fontWeight: 500 }}>{fmtDec(interestSaved)}</strong> in interest and cuts <strong style={{ fontWeight: 500 }}>{monthsSaved} months</strong> off your payoff timeline.
+=======
+                        Adding {fmt(parseFloat(extra))}/month saves you <strong style={{fontWeight:500}}>{fmtDec(interestSaved)}</strong> in interest and cuts <strong style={{fontWeight:500}}>{monthsSaved} months</strong> off your payoff timeline.
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
                       </p>
                     )}
                   </div>
@@ -239,10 +388,22 @@ export default function Page() {
                   <span className="dr-schedule-toggle" onClick={() => setShowSchedule(s => !s)}>
                     {showSchedule ? "Hide" : "Show"} amortization schedule
                   </span>
+<<<<<<< HEAD
                   <div className={"dr-schedule" + (showSchedule ? " show" : "")}>
                     <table className="dr-schedule-table">
                       <thead>
                         <tr><th>Month</th><th>Interest</th><th>Total interest</th><th>Remaining</th></tr>
+=======
+                  <div className={`dr-schedule${showSchedule ? " show" : ""}`}>
+                    <table className="dr-schedule-table">
+                      <thead>
+                        <tr>
+                          <th>Month</th>
+                          <th>Interest</th>
+                          <th>Total interest</th>
+                          <th>Remaining</th>
+                        </tr>
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
                       </thead>
                       <tbody>
                         {results.schedule.map((row, i) => (
@@ -281,11 +442,19 @@ export default function Page() {
             </div>
             <div className="dr-info-item">
               <p className="dr-info-title">Amortization schedule</p>
+<<<<<<< HEAD
               <p className="dr-info-body">The expandable schedule shows your balance at key intervals — monthly for the first two years, then annually. Useful for seeing exactly when the balance crosses certain milestones.</p>
             </div>
             <div className="dr-info-item">
               <p className="dr-info-title">Extra payment modeling</p>
               <p className="dr-info-body">The extra payment field runs a parallel simulation showing months saved and interest avoided. Even $25 extra per month can cut years off a long payoff timeline.</p>
+=======
+              <p className="dr-info-body">The expandable schedule shows your balance at key intervals — monthly for the first two years, then annually. It&apos;s useful for seeing exactly when the balance crosses certain milestones.</p>
+            </div>
+            <div className="dr-info-item">
+              <p className="dr-info-title">Extra payment modeling</p>
+              <p className="dr-info-body">The extra payment field runs a parallel simulation showing months saved and interest avoided. The savings are often surprisingly large — even $25 extra per month can cut years off a long payoff timeline.</p>
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
             </div>
           </div>
         </div>
@@ -296,7 +465,11 @@ export default function Page() {
           <div className="dr-prose">
             <p>Most people carrying debt have a rough sense of their monthly payment but no clear picture of when they&apos;ll be debt-free or what the debt is actually costing them. This gap between the monthly number and the total cost is where lenders profit — and where borrowers lose more than they realize.</p>
             <p>A $10,000 personal loan at 15% APR with a $200 monthly payment takes over seven years to pay off and costs more than $7,000 in interest — meaning you repay nearly twice what you borrowed. Seeing that number clearly often changes behavior in ways that abstract warnings about interest rates do not.</p>
+<<<<<<< HEAD
             <p>Understanding your timeline also gives you something actionable: a specific monthly amount that, if increased by even 10–20%, meaningfully reduces both the duration and cost of your debt.</p>
+=======
+            <p>Understanding your timeline also gives you something actionable: a specific monthly amount that, if increased by even 10–20%, meaningfully reduces both the duration and cost of your debt. Small consistent changes at the start of a repayment period have a compounding effect of their own.</p>
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
           </div>
         </div>
 
@@ -312,7 +485,11 @@ export default function Page() {
             <div>
               <p className="dr-tip-num">02</p>
               <p className="dr-tip-title">Refinance to a lower rate</p>
+<<<<<<< HEAD
               <p className="dr-tip-body">If your credit has improved since taking on the debt, refinancing at a lower APR can significantly reduce total interest cost without changing your monthly payment. Worth checking annually for long-running balances.</p>
+=======
+              <p className="dr-tip-body">If your credit has improved since taking on the debt, refinancing or consolidating at a lower APR can significantly reduce total interest cost without changing your monthly payment. Worth checking annually for long-running balances.</p>
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
             </div>
             <div>
               <p className="dr-tip-num">03</p>
@@ -333,15 +510,24 @@ export default function Page() {
           <div className="dr-prose">
             <p>While the mechanics are the same, payoff timelines vary dramatically by debt type due to differences in interest rates and typical balances:</p>
             <ul>
+<<<<<<< HEAD
               <li><strong style={{ fontWeight: 500 }}>Personal loans</strong> typically carry rates between 8–36% APR. Always know your actual rate — not an estimate.</li>
               <li><strong style={{ fontWeight: 500 }}>Auto loans</strong> are usually lower rate (4–12%) but carry large balances. Small extra payments have a meaningful effect early in the loan.</li>
               <li><strong style={{ fontWeight: 500 }}>Student loans</strong> vary widely. Federal loans have income-based repayment options; private loans respond well to extra payments.</li>
               <li><strong style={{ fontWeight: 500 }}>Medical debt</strong> often carries 0% interest if on a payment plan — confirm the terms with your provider.</li>
               <li><strong style={{ fontWeight: 500 }}>Credit cards</strong> typically have the highest rates (18–29% APR). Use the Credit Card Debt Payoff Calculator for multi-card scenarios.</li>
+=======
+              <li><strong style={{fontWeight:500}}>Personal loans</strong> typically carry rates between 8–36% APR. The wide range means the first step is always knowing your actual rate — not an estimate.</li>
+              <li><strong style={{fontWeight:500}}>Auto loans</strong> are usually lower rate (4–12%) but carry large balances. Small extra payments have a meaningful effect early in the loan when more of each payment goes to interest.</li>
+              <li><strong style={{fontWeight:500}}>Student loans</strong> vary widely by type. Federal loans have fixed rates and income-based repayment options; private loans behave more like personal loans and respond well to extra payments.</li>
+              <li><strong style={{fontWeight:500}}>Medical debt</strong> often carries 0% interest if on a payment plan — in which case the payoff time is straightforward division, but confirming the terms with your provider is important.</li>
+              <li><strong style={{fontWeight:500}}>Credit cards</strong> typically have the highest rates (18–29% APR) and no fixed payoff term. Use the Credit Card Debt Payoff Calculator for multi-card scenarios with strategy comparison.</li>
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
             </ul>
           </div>
         </div>
 
+<<<<<<< HEAD
         {/* ========== MONEYWISE LINK — START ========== */}
         <div style={{ background: "#fff", border: "1px solid #e0dbd3", borderRadius: "4px", padding: "1rem 1.5rem", marginBottom: "1.5rem", textAlign: "center" }}>
           <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "13px", color: "#888" }}>
@@ -353,6 +539,8 @@ export default function Page() {
         </div>
         {/* ========== MONEYWISE LINK — END ========== */}
 
+=======
+>>>>>>> 8c4d0782b0cf01d0166b7638b74066679c2add49
         {/* RELATED */}
         <div className="dr-card">
           <p className="dr-section-title">Related tools</p>
