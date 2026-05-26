@@ -1,9 +1,7 @@
-"use client"
-
-import { useState } from "react"
+import DebtReducingCalculator from "./DebtReducingCalculator"
 import { RELATED_LINKS as RELATED } from "./lib/links"
 
-const css = `
+const staticCss = `
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #faf8f4; font-family: 'DM Mono', monospace; color: #1a1a1a; }
@@ -64,11 +62,19 @@ const css = `
   .dr-prose p:last-child { margin-bottom: 0; }
   .dr-prose ul { font-size: 13px; color: #444; line-height: 1.8; padding-left: 1.2rem; margin-bottom: .75rem; }
   .dr-prose ul li { margin-bottom: .3rem; }
+  .dr-faq-item { border-bottom: 1px solid #e0dbd3; padding: 1rem 0; }
+  .dr-faq-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .dr-faq-q { font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: .4rem; }
+  .dr-faq-a { font-size: 13px; color: #555; line-height: 1.7; }
   .dr-tip-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
   .dr-tip-num { font-family: 'DM Serif Display', serif; font-size: 2rem; color: #9fe1cb; line-height: 1; margin-bottom: .4rem; }
   .dr-tip-title { font-size: 12px; font-weight: 500; color: #1a1a1a; margin-bottom: .25rem; }
   .dr-tip-body { font-size: 12px; color: #888; line-height: 1.5; }
+  .sub-nav { font-size: 12px; margin-bottom: 1.5rem; }
+  .sub-nav a { color: #0f6e56; text-decoration: none; }
+  .sub-nav a:hover { text-decoration: underline; }
   .dr-related-links { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .dr-related-label { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #888; margin-bottom: .75rem; }
   .dr-related-link { font-size: 12px; padding: .35rem .75rem; border: 1px solid #e0dbd3; border-radius: 2px; color: #555; text-decoration: none; transition: all .15s; display: inline-block; }
   .dr-related-link:hover { border-color: #1a1a1a; color: #1a1a1a; }
   .dr-disclaimer { font-size: 11px; color: #888; line-height: 1.6; border-top: 1px solid #e0dbd3; padding-top: 1rem; margin-top: 1rem; }
@@ -79,188 +85,51 @@ const css = `
   }
 `
 
-function fmt(n) { return "$" + Math.round(n).toLocaleString("en-US") }
-function fmtDec(n) { return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }
-
-function simulate(balance, rate, payment) {
-  if (!balance || !payment) return null
-  const monthlyRate = rate / 100 / 12
-  const minRequired = balance * monthlyRate
-  if (payment <= minRequired && rate > 0) return { underpaying: true, minRequired }
-  let remaining = balance, totalInterest = 0, months = 0
-  const schedule = []
-  while (remaining > 0 && months < 600) {
-    const interest = remaining * monthlyRate
-    totalInterest += interest
-    remaining = remaining + interest - payment
-    if (remaining < 0) remaining = 0
-    months++
-    if (months <= 24 || months % 12 === 0) {
-      schedule.push({ month: months, remaining, interest, totalInterest })
-    }
+const FAQ = [
+  {
+    q: "What happens if my monthly payment doesn't cover the interest?",
+    a: "If your payment is less than or equal to the monthly interest charge, the balance will never decrease — it will actually grow. This is the minimum payment trap, and the calculator flags it immediately. To make progress, you must pay at least enough to cover the monthly interest plus some additional principal. Even $1 above the interest charge creates a downward path to zero, though it may take many years."
+  },
+  {
+    q: "How accurate is the payoff timeline?",
+    a: "The simulation assumes a fixed interest rate and fixed monthly payment for the entire repayment period — which matches how fixed-rate loans work. If your loan has a variable rate, the timeline will change if rates change. The calculator also assumes you make every payment on time without additional borrowing. Real-world results may vary, but the estimate provides a clear baseline for planning."
+  },
+  {
+    q: "Why does paying extra early matter so much?",
+    a: "Interest compounds monthly on the remaining balance. Any extra payment you make reduces the principal immediately, which means less interest accrues in every future month. That saved interest also doesn't compound. This creates a snowball effect: extra payments made early in the loan save dramatically more than the same dollar amount applied later. This calculator shows you the exact savings so you can decide if an extra payment is worth it."
+  },
+  {
+    q: "Should I pay off debt or invest instead?",
+    a: "Compare your debt's interest rate to expected investment returns. A credit card at 22% APR is a guaranteed 22% return by paying it off — far better than any risk-free investment. A mortgage at 4% APR might be worth keeping if you can earn 7% in the market. Use the extra payment section to see how much interest you'd save, then decide if that 'return' beats your investment alternatives. Risk-free debt payoff is often the better choice for high-rate debt."
+  },
+  {
+    q: "What's the difference between this calculator and the Credit Card Debt Payoff Calculator?",
+    a: "This calculator handles a single debt — perfect for personal loans, auto loans, student loans, or medical debt. The Credit Card Debt Payoff Calculator handles multiple cards simultaneously with different balances, rates, and minimum payments, and offers snowball/avalanche/emotional strategies for prioritizing which card to pay first. Use this one for one debt; use the other for multiple credit cards."
+  },
+  {
+    q: "How do I read the amortization schedule?",
+    a: "The schedule shows your balance at key intervals: every month for the first two years, then annually. The 'Interest' column shows the interest charged that month. 'Total interest' is cumulative. 'Remaining' is your balance after that month's payment. As you progress through the schedule, the interest per month decreases because your remaining balance shrinks — that's amortization at work. The final row shows zero balance, your payoff milestone."
   }
-  return { months, totalInterest, schedule, underpaying: false }
-}
-
-function simulateExtra(balance, rate, payment, extra) {
-  if (!balance || !payment || !extra) return null
-  const monthlyRate = rate / 100 / 12
-  let remaining = balance, totalInterest = 0, months = 0
-  while (remaining > 0 && months < 600) {
-    const interest = remaining * monthlyRate
-    totalInterest += interest
-    remaining = remaining + interest - payment - extra
-    if (remaining < 0) remaining = 0
-    months++
-  }
-  return { months, totalInterest }
-}
+]
 
 export default function Page() {
-  const [balance,      setBalance]      = useState("")
-  const [rate,         setRate]         = useState("")
-  const [payment,      setPayment]      = useState("")
-  const [extra,        setExtra]        = useState("")
-  const [results,      setResults]      = useState(null)
-  const [showSchedule, setShowSchedule] = useState(false)
-
-  const calculate = () => {
-    const b = parseFloat(balance), r = parseFloat(rate) || 0, p = parseFloat(payment)
-    if (!b || !p) return
-    setResults(simulate(b, r, p))
-    setShowSchedule(false)
-  }
-
-  const extraResult   = results && !results.underpaying && extra
-    ? simulateExtra(parseFloat(balance), parseFloat(rate) || 0, parseFloat(payment), parseFloat(extra))
-    : null
-  const totalPaid     = results && !results.underpaying ? parseFloat(balance) + results.totalInterest : 0
-  const interestPct   = totalPaid > 0 ? Math.round(results.totalInterest / totalPaid * 100) : 0
-  const principalPct  = 100 - interestPct
-  const monthsSaved   = extraResult ? results.months - extraResult.months : 0
-  const interestSaved = extraResult ? results.totalInterest - extraResult.totalInterest : 0
-
   return (
     <>
-      <style>{css}</style>
+      <style dangerouslySetInnerHTML={{ __html: staticCss }} />
       <main className="dr-wrap">
+
+        <p className="sub-nav"><a href="https://moneywisecalculator.com">← More free tools at MoneyWise Calculator</a></p>
 
         <div className="dr-header">
           <p className="dr-eyebrow">Personal Finance</p>
           <h1 className="dr-title">Debt Reducing<br /><em>Calculator</em></h1>
         </div>
 
-        {/* TOOL */}
-        <div className="dr-card">
-          <div className="dr-field-row">
-            <div>
-              <label className="dr-field-label" htmlFor="balance">Total debt balance</label>
-              <div className="dr-input-wrap">
-                <span className="dr-prefix">$</span>
-                <input id="balance" className="dr-input" type="number" min="0" placeholder="0"
-                  value={balance} onChange={e => setBalance(e.target.value)} onKeyDown={e => e.key === "Enter" && calculate()} />
-              </div>
-            </div>
-            <div>
-              <label className="dr-field-label" htmlFor="rate">Annual interest rate</label>
-              <div className="dr-input-wrap">
-                <input id="rate" className="dr-input no-prefix" type="number" min="0" step="0.01" placeholder="0.00"
-                  value={rate} onChange={e => setRate(e.target.value)} onKeyDown={e => e.key === "Enter" && calculate()} />
-                <span className="dr-suffix">%</span>
-              </div>
-            </div>
-            <div>
-              <label className="dr-field-label" htmlFor="payment">Monthly payment</label>
-              <div className="dr-input-wrap">
-                <span className="dr-prefix">$</span>
-                <input id="payment" className="dr-input" type="number" min="0" placeholder="0"
-                  value={payment} onChange={e => setPayment(e.target.value)} onKeyDown={e => e.key === "Enter" && calculate()} />
-              </div>
-            </div>
-          </div>
+        <p style={{ fontSize: "13px", color: "#555", lineHeight: "1.7", marginBottom: "1.5rem" }}>
+          Free tool to calculate exactly how long it will take to become debt-free. Enter your balance, interest rate, and monthly payment to see your payoff timeline, total interest, and the impact of paying extra each month.
+        </p>
 
-          <button className="dr-calc-btn" onClick={calculate}>Calculate payoff timeline →</button>
-
-          {results && (
-            <div className="dr-results">
-              {results.underpaying ? (
-                <div className="dr-warn">
-                  Your monthly payment of {fmt(parseFloat(payment))} does not cover the monthly interest of <span>{fmtDec(results.minRequired)}</span>. The balance will grow indefinitely. You need at least <span>{fmtDec(results.minRequired + 1)}/month</span> to make progress.
-                </div>
-              ) : (
-                <>
-                  <div className="dr-result-grid">
-                    <div className="dr-result-cell">
-                      <p className="dr-result-label">Payoff time</p>
-                      <p className="dr-result-val">
-                        {results.months >= 600 ? "50+ yrs" : results.months < 12 ? results.months + " mo" : Math.floor(results.months / 12) + "y " + (results.months % 12) + "m"}
-                      </p>
-                    </div>
-                    <div className="dr-result-cell">
-                      <p className="dr-result-label">Total interest</p>
-                      <p className="dr-result-val red">{fmtDec(results.totalInterest)}</p>
-                    </div>
-                    <div className="dr-result-cell">
-                      <p className="dr-result-label">Total paid</p>
-                      <p className="dr-result-val">{fmtDec(totalPaid)}</p>
-                    </div>
-                  </div>
-
-                  <div className="dr-timeline">
-                    <div className="dr-timeline-label">
-                      <span>Principal vs interest</span>
-                      <span>{principalPct}% principal · {interestPct}% interest</span>
-                    </div>
-                    <div className="dr-bar-track">
-                      <div className="dr-bar-principal" style={{ width: principalPct + "%" }} />
-                      <div className="dr-bar-interest" style={{ width: interestPct + "%" }} />
-                    </div>
-                    <div className="dr-bar-legend">
-                      <span><span className="dr-legend-dot" style={{ background: "#1a1a1a" }} />Principal: {fmt(parseFloat(balance))}</span>
-                      <span><span className="dr-legend-dot" style={{ background: "#b91c1c" }} />Interest: {fmtDec(results.totalInterest)}</span>
-                    </div>
-                  </div>
-
-                  <div className="dr-extra-section">
-                    <p className="dr-extra-title">What if I pay a little extra each month?</p>
-                    <div className="dr-extra-row">
-                      <span className="dr-extra-label">Extra monthly payment</span>
-                      <span className="dr-extra-prefix">$</span>
-                      <input className="dr-extra-input" type="number" min="0" placeholder="0"
-                        value={extra} onChange={e => setExtra(e.target.value)} />
-                    </div>
-                    {extraResult && (
-                      <p className="dr-extra-result">
-                        Adding {fmt(parseFloat(extra))}/month saves you <strong style={{ fontWeight: 500 }}>{fmtDec(interestSaved)}</strong> in interest and cuts <strong style={{ fontWeight: 500 }}>{monthsSaved} months</strong> off your payoff timeline.
-                      </p>
-                    )}
-                  </div>
-
-                  <span className="dr-schedule-toggle" onClick={() => setShowSchedule(s => !s)}>
-                    {showSchedule ? "Hide" : "Show"} amortization schedule
-                  </span>
-                  <div className={"dr-schedule" + (showSchedule ? " show" : "")}>
-                    <table className="dr-schedule-table">
-                      <thead>
-                        <tr><th>Month</th><th>Interest</th><th>Total interest</th><th>Remaining</th></tr>
-                      </thead>
-                      <tbody>
-                        {results.schedule.map((row, i) => (
-                          <tr key={i}>
-                            <td>{row.month}</td>
-                            <td>{fmtDec(row.interest)}</td>
-                            <td>{fmtDec(row.totalInterest)}</td>
-                            <td>{row.remaining < 0.01 ? "—" : fmtDec(row.remaining)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-        </div>
+        <DebtReducingCalculator />
 
         {/* HOW IT WORKS */}
         <div className="dr-card">
@@ -273,7 +142,7 @@ export default function Page() {
           <div className="dr-info-grid">
             <div className="dr-info-item">
               <p className="dr-info-title">Compound interest</p>
-              <p className="dr-info-body">Interest is calculated monthly on the remaining balance. This means unpaid interest from last month increases the base on which this month&apos;s interest is calculated — the core mechanic that makes debt grow so quickly.</p>
+              <p className="dr-info-body">Interest is calculated monthly on the remaining balance. This means unpaid interest from last month increases the base on which this month's interest is calculated — the core mechanic that makes debt grow so quickly.</p>
             </div>
             <div className="dr-info-item">
               <p className="dr-info-title">Minimum payment trap</p>
@@ -294,7 +163,7 @@ export default function Page() {
         <div className="dr-card">
           <p className="dr-section-title">Why understanding your payoff timeline matters</p>
           <div className="dr-prose">
-            <p>Most people carrying debt have a rough sense of their monthly payment but no clear picture of when they&apos;ll be debt-free or what the debt is actually costing them. This gap between the monthly number and the total cost is where lenders profit — and where borrowers lose more than they realize.</p>
+            <p>Most people carrying debt have a rough sense of their monthly payment but no clear picture of when they'll be debt-free or what the debt is actually costing them. This gap between the monthly number and the total cost is where lenders profit — and where borrowers lose more than they realize.</p>
             <p>A $10,000 personal loan at 15% APR with a $200 monthly payment takes over seven years to pay off and costs more than $7,000 in interest — meaning you repay nearly twice what you borrowed. Seeing that number clearly often changes behavior in ways that abstract warnings about interest rates do not.</p>
             <p>Understanding your timeline also gives you something actionable: a specific monthly amount that, if increased by even 10–20%, meaningfully reduces both the duration and cost of your debt.</p>
           </div>
@@ -307,7 +176,7 @@ export default function Page() {
             <div>
               <p className="dr-tip-num">01</p>
               <p className="dr-tip-title">Increase your payment, even slightly</p>
-              <p className="dr-tip-body">Adding $50 or $100 to your monthly payment consistently is one of the highest-return financial moves available. The interest you avoid paying compounds just like the interest you&apos;re charged — it works in both directions.</p>
+              <p className="dr-tip-body">Adding $50 or $100 to your monthly payment consistently is one of the highest-return financial moves available. The interest you avoid paying compounds just like the interest you're charged — it works in both directions.</p>
             </div>
             <div>
               <p className="dr-tip-num">02</p>
@@ -327,45 +196,79 @@ export default function Page() {
           </div>
         </div>
 
+{/* REAL-WORLD EXAMPLE */}
+<div className="dr-card">
+  <p className="dr-section-title">Real-world example: Minimum vs. aggressive payment</p>
+  <div className="dr-prose">
+    <p><strong>Meet Sarah.</strong> She has a $15,000 personal loan at 18% APR with a minimum monthly payment of $300.</p>
+  </div>
+  
+  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "1rem" }}>
+    <div style={{ background: "#fff8f8", padding: "1rem", borderRadius: "4px", border: "1px solid #fcd4d4" }}>
+      <p style={{ fontSize: "12px", fontWeight: "500", color: "#b91c1c", marginBottom: ".5rem" }}>📉 Paying only the minimum</p>
+      <p style={{ fontSize: "13px", color: "#444", marginBottom: ".5rem" }}><strong>Monthly payment:</strong> $300</p>
+      <p style={{ fontSize: "13px", color: "#444", marginBottom: ".5rem" }}><strong>Payoff time:</strong> 9 years, 4 months</p>
+      <p style={{ fontSize: "13px", color: "#444", marginBottom: ".5rem" }}><strong>Total interest paid:</strong> $18,647</p>
+      <p style={{ fontSize: "13px", color: "#b91c1c", fontWeight: "500", marginTop: ".5rem" }}>She pays back MORE than double what she borrowed.</p>
+    </div>
+    
+    <div style={{ background: "#eaf5ee", padding: "1rem", borderRadius: "4px", border: "1px solid #b7d9c8" }}>
+      <p style={{ fontSize: "12px", fontWeight: "500", color: "#0f6e56", marginBottom: ".5rem" }}>📈 Paying aggressively (+$200 extra)</p>
+      <p style={{ fontSize: "13px", color: "#444", marginBottom: ".5rem" }}><strong>Monthly payment:</strong> $500 ($300 + $200)</p>
+      <p style={{ fontSize: "13px", color: "#444", marginBottom: ".5rem" }}><strong>Payoff time:</strong> 3 years, 2 months</p>
+      <p style={{ fontSize: "13px", color: "#444", marginBottom: ".5rem" }}><strong>Total interest paid:</strong> $4,812</p>
+      <p style={{ fontSize: "13px", color: "#0f6e56", fontWeight: "500", marginTop: ".5rem" }}>She saves $13,835 in interest and is debt-free 6 years earlier.</p>
+    </div>
+  </div>
+  
+  <div style={{ marginTop: "1rem", padding: "1rem", background: "#f5f3ef", borderRadius: "4px" }}>
+    <p style={{ fontSize: "13px", color: "#1a1a1a", fontWeight: "500", marginBottom: ".25rem" }}>The bottom line:</p>
+    <p style={{ fontSize: "13px", color: "#444" }}>Paying an extra $200 per month turns a 9‑year nightmare into a 3‑year plan — and saves Sarah nearly <strong>$14,000</strong>. This is the power of aggressive debt reduction. Try your own numbers in the calculator above.</p>
+  </div>
+</div>
         {/* TYPES OF DEBT */}
         <div className="dr-card">
           <p className="dr-section-title">This calculator works for any type of debt</p>
           <div className="dr-prose">
             <p>While the mechanics are the same, payoff timelines vary dramatically by debt type due to differences in interest rates and typical balances:</p>
             <ul>
-              <li><strong style={{ fontWeight: 500 }}>Personal loans</strong> typically carry rates between 8–36% APR. Always know your actual rate — not an estimate.</li>
-              <li><strong style={{ fontWeight: 500 }}>Auto loans</strong> are usually lower rate (4–12%) but carry large balances. Small extra payments have a meaningful effect early in the loan.</li>
-              <li><strong style={{ fontWeight: 500 }}>Student loans</strong> vary widely. Federal loans have income-based repayment options; private loans respond well to extra payments.</li>
-              <li><strong style={{ fontWeight: 500 }}>Medical debt</strong> often carries 0% interest if on a payment plan — confirm the terms with your provider.</li>
-              <li><strong style={{ fontWeight: 500 }}>Credit cards</strong> typically have the highest rates (18–29% APR). Use the Credit Card Debt Payoff Calculator for multi-card scenarios.</li>
+              <li><strong>Personal loans</strong> typically carry rates between 8–36% APR. Always know your actual rate — not an estimate.</li>
+              <li><strong>Auto loans</strong> are usually lower rate (4–12%) but carry large balances. Small extra payments have a meaningful effect early in the loan.</li>
+              <li><strong>Student loans</strong> vary widely. Federal loans have income-based repayment options; private loans respond well to extra payments.</li>
+              <li><strong>Medical debt</strong> often carries 0% interest if on a payment plan — confirm the terms with your provider.</li>
+              <li><strong>Credit cards</strong> typically have the highest rates (18–29% APR). Use the Credit Card Debt Payoff Calculator for multi-card scenarios.</li>
             </ul>
           </div>
         </div>
 
-        {/* ========== MONEYWISE LINK — START ========== */}
-        <div style={{ background: "#fff", border: "1px solid #e0dbd3", borderRadius: "4px", padding: "1rem 1.5rem", marginBottom: "1.5rem", textAlign: "center" }}>
-          <p style={{ fontFamily: "'DM Mono', monospace", fontSize: "13px", color: "#888" }}>
-            Looking for more free financial tools?{" "}
-            <a href="https://moneywisecalculator.com" style={{ color: "#b45309", textDecoration: "underline" }}>
-              Visit MoneyWiseCalculator.com
-            </a>
-          </p>
+        {/* FAQ */}
+        <div className="dr-card">
+          <p className="dr-section-title">Frequently asked questions</p>
+          {FAQ.map((item, i) => (
+            <div className="dr-faq-item" key={i}>
+              <p className="dr-faq-q">{item.q}</p>
+              <p className="dr-faq-a">{item.a}</p>
+            </div>
+          ))}
         </div>
-        {/* ========== MONEYWISE LINK — END ========== */}
 
-        {/* RELATED */}
+        {/* RELATED TOOLS */}
         <div className="dr-card">
           <p className="dr-section-title">Related tools</p>
+          <p className="dr-related-label">More free tools from the MoneyWise Calculator network</p>
           <div className="dr-related-links">
             {RELATED.map((r, i) => (
               <a key={i} className="dr-related-link" href={r.href}>{r.label}</a>
             ))}
           </div>
           <div className="dr-disclaimer">
-            This tool provides estimates for informational purposes only and does not constitute financial advice. Results assume a fixed interest rate and fixed monthly payment for the full repayment period. This site may use cookies and analytics. By using this site, you agree to our Privacy Policy and Terms of Service.
+            This tool provides estimates for informational purposes only and does not constitute financial advice. Results assume a fixed interest rate and fixed monthly payment for the full repayment period. This site uses cookies and analytics. By using this site, you agree to our{" "}
+            <a href="/privacy" style={{ color: "#888" }}>Privacy Policy</a> and{" "}
+            <a href="/terms" style={{ color: "#888" }}>Terms of Service</a>.
             <div className="dr-footer-links">
               <a href="/privacy">Privacy Policy</a>
               <a href="/terms">Terms of Service</a>
+              <a href="https://moneywisecalculator.com">MoneyWise Calculator</a>
             </div>
           </div>
         </div>

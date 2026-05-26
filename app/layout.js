@@ -1,22 +1,22 @@
 export const metadata = {
-  title: "Debt Payoff Calculator | Estimate How Long to Become Debt‑Free",
-  description: "Calculate how long it will take to pay off debt based on balance, interest rate, and monthly payment.",
-  
+  title: "Debt Reducing Calculator | Estimate How Long to Become Debt‑Free",
+  description: "Calculate how long it will take to pay off debt based on balance, interest rate, and monthly payment. See total interest, extra payment impact, and amortization schedule.",
+
   alternates: {
-    canonical: "https://www.debtreducingcalculator.com",           // ← MUST CHANGE
+    canonical: "https://www.debtreducingcalculator.com",
   },
 
   openGraph: {
-    title: "Debt Payoff Calculator | Estimate How Long to Become Debt‑Free",
-    description: "Calculate how long it will take to pay off debt based on balance, interest rate, and monthly payment.",
-    url: "https://www.debtreducingcalculator.com",                 // ← MUST CHANGE
-    siteName: "Moneywise Calculators",             // ← Change
+    title: "Debt Reducing Calculator | Estimate How Long to Become Debt‑Free",
+    description: "Calculate how long it will take to pay off debt based on balance, interest rate, and monthly payment. See total interest and extra payment impact.",
+    url: "https://www.debtreducingcalculator.com",
+    siteName: "MoneyWise Calculators",
     images: [
       {
-        url: "https://www.debtreducingcalculator.com/og-image.png", // ← MUST CHANGE
+        url: "https://www.debtreducingcalculator.com/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Debt Payoff Calculator",
+        alt: "Debt Reducing Calculator — Estimate your debt payoff timeline",
       },
     ],
     locale: "en_US",
@@ -25,7 +25,7 @@ export const metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Debt Payoff Calculator | Estimate How Long to Become Debt‑Free",
+    title: "Debt Reducing Calculator | Estimate How Long to Become Debt‑Free",
     description: "Calculate how long it will take to pay off debt based on balance, interest rate, and monthly payment.",
   },
 
@@ -46,13 +46,7 @@ export const metadata = {
     apple: "/apple-touch-icon.png",
   },
 
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-  },
-
-  authors: [{name: "David Graham" }],
+  authors: [{ name: "David Graham" }],
   creator: "MoneyWise Calculators",
   publisher: "MoneyWise Calculators",
 };
@@ -61,28 +55,37 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        {/* AdSense */}
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3475627763908800"
           crossOrigin="anonymous"
         ></script>
-              <script
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebApplication",
-              name: "debt-tool",
-              description: "Financial calculator tool",
-              url: "https://www.debt-tool.com",
-              applicationCategory: "Finance",
+              name: "Debt Reducing Calculator",
+              description: "Free tool to calculate how long it will take to pay off debt. See total interest, extra payment impact, and full amortization schedule.",
+              url: "https://www.debtreducingcalculator.com",
+              applicationCategory: "FinanceApplication",
               operatingSystem: "All",
-              offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }
+              browserRequirements: "Requires JavaScript",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD"
+              },
+              author: {
+                "@type": "Organization",
+                name: "MoneyWise Calculators",
+                url: "https://moneywisecalculator.com"
+              }
             }),
           }}
         />
-    </head>
+      </head>
       <body>{children}</body>
     </html>
   );
